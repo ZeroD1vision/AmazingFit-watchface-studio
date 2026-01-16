@@ -12,13 +12,12 @@ const io = socketIO(server);
 
 const PORT = process.env.PORT || 3000;
 
-
 app.use(express.static(path.join(__dirname, '../public')));
 app.use(express.json());
 
 const WATCHFACES_DIR = path.join(__dirname, 'watchfaces');
 if (!fs.existsSync(WATCHFACES_DIR)) {
-    fs.mkdirSync(WATCHFACES_DIR, { recursive: true });
+  fs.mkdirSync(WATCHFACES_DIR, { recursive: true });
 }
 
 // Пример watchface по умолчанию
@@ -129,35 +128,39 @@ function clearHands() {
 onInit();`;
 
 const defaultWatchfacePath = path.join(WATCHFACES_DIR, 'default.watchface.js');
-if(!fs.existsSync(defaultWatchfacePath)) {
-    fs.writeFileSync(defaultWatchfacePath, DEFAULT_WATCHFACE);
+if (!fs.existsSync(defaultWatchfacePath)) {
+  fs.writeFileSync(defaultWatchfacePath, DEFAULT_WATCHFACE);
 }
 
 app.get('/api/watchfaces', (req, res) => {
-    fs.readdir(WATCHFACES_DIR, (err, files) => {
-        if (err) {
-            return res.status(500).json({ error: 'Cannot read watchfaces' });
-        }
-        res.json(files);
-    });
+  fs.readdir(WATCHFACES_DIR, (err, files) => {
+    if (err) {
+      return res.status(500).json({ error: 'Cannot read watchfaces' });
+    }
+    res.json(files);
+  });
 });
 
 app.get('/api/watchface/:name', (req, res) => {
-    fs.readFile(path.join(WATCHFACES_DIR, req.params.name), 'utf8', (err, data) => {
-        if (err) {
-            return res.status(404).json({ error: 'Watchface not found' });
-        }
-        res.json({ code: data });
-    });
+  fs.readFile(
+    path.join(WATCHFACES_DIR, req.params.name),
+    'utf8',
+    (err, data) => {
+      if (err) {
+        return res.status(404).json({ error: 'Watchface not found' });
+      }
+      res.json({ code: data });
+    },
+  );
 });
 
 app.post('/api/watchface/:name', (req, res) => {
-    fs.writeFile(path.join(WATCHFACES_DIR, req.params.name), 'utf8', (err) => {
-        if (err) {
-            return res.status(500).json({ error: 'Cannot save wachface' });
-        }
-        res.json({ success: true });
-    });
+  fs.writeFile(path.join(WATCHFACES_DIR, req.params.name), 'utf8', (err) => {
+    if (err) {
+      return res.status(500).json({ error: 'Cannot save wachface' });
+    }
+    res.json({ success: true });
+  });
 });
 
 io.on('connection', (socket) => {
@@ -173,9 +176,9 @@ io.on('connection', (socket) => {
       if (!err) {
         io.to(watchfaceName).emit('code-updated', code);
       }
-    })
+    });
   });
-  
+
   socket.on('disconnect', () => {
     console.log('Client disconnected ', socket.id);
   });
@@ -183,4 +186,4 @@ io.on('connection', (socket) => {
 
 server.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
-})
+});
