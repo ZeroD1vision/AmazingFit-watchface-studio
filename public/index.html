@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AmazingFit Watchface Studio</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-clock"></i>
+                <h1>AmazingFit Watchface Studio</h1>
+            </div>
+            <div class="controls">
+                <button id="saveBtn" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Save
+                </button>
+                <button id="runBtn" class="btn btn-success">
+                    <i class="fas fa-play"></i> Run
+                </button>
+                <select id="watchfaceSelect" class="select">
+                    <option value="default.watchface.js">Default Watchface</option>
+                </select>
+            </div>
+        </header>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Editor panel -->
+            <div class="panel editor-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-code"></i> Code Editor</h2>
+                    <div class="panel-actions">
+                        <button id="formatBtn" class="btn btn-sm">
+                            <i class="fas fa-indent"></i> Format
+                        </button>
+                        <button id="newBtn" class="btn btn-sm">
+                            <i class="fas fa-file"></i> New
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <textarea id="codeEditor" spellcheck="false"></textarea>
+                </div>
+                <div class="panel-footer">
+                    <div class="status">
+                        <span id="statusText">Ready</span>
+                        <span id="lineCounter">Line: 1, Col: 1</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Simulator panel -->
+            <div class="panel simulator-panel">
+                <div class="panel-header">
+                    <h2><i class="fas fa-mobile-alt"></i> Watch Simulator</h2>
+                    <div class="panel-actions">
+                        <select id="deviceSelect" class="select">
+                            <option value="amazingfit-gtr4">AmazingFit GTR 4</option>
+                            <option value="amazingfit-trex2">AmazingFit T-Rex 2</option>
+                            <option value="amazingfit-gts4">AmazingFit GTS 4</option>
+                        </select>
+                        <button id="refreshBtn" class="btn btn-sm">
+                            <i class="fas fa-redo"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-body">
+                    <div class="watch-frame" id="watchFrame">
+                        <div class="watch-screen">
+                            <canvas id="watchCanvas" width="454" height="454"></canvas>
+                        </div>
+                        <div class="watch-buttons">
+                            <div class="button button-top"></div>
+                            <div class="button button-bottom"></div>
+                        </div>
+                    </div>
+                    <div class="simulator-controls">
+                        <button id="togglePower" class="btn btn-sm">
+                            <i class="fas fa-power-off"></i> Power
+                        </button>
+                        <button id="screenshotBtn" class="btn btn-sm">
+                            <i class="fas fa-camera"></i> Screenshot
+                        </button>
+                    </div>
+                </div>
+                <div class="panel-footer">
+                    <div class="fps-counter">
+                        <span>FPS: <span id="fps">60</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Console panel -->
+        <div class="console-panel">
+            <div class="panel-header">
+                <h2><i class="fas fa-terminal"></i> Console</h2>
+                <button id="clearConsoleBtn" class="btn btn-sm">
+                    <i class="fas fa-trash"></i> Clear
+                </button>
+            </div>
+            <div class="panel-body">
+                <div id="consoleOutput"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="lib/zeppos-emulator.js"></script>
+    <script src="editor.js"></script>
+    <script src="simulator.js"></script>
+</body>
+</html>
