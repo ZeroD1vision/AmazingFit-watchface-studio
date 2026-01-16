@@ -54,5 +54,18 @@
     "*.{json,css,md}": [
       "prettier --write"
     ]
-  }
+  },
+  "directories": {
+    "doc": "docs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZeroD1vision/AmazingFit-watchface-studio.git"
+  },
+  "keywords": [],
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/ZeroD1vision/AmazingFit-watchface-studio/issues"
+  },
+  "homepage": "https://github.com/ZeroD1vision/AmazingFit-watchface-studio#readme"
 }
