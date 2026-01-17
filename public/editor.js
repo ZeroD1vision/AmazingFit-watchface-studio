@@ -137,4 +137,26 @@ class CodeEditor {
             document.getElementById('statusText').textContent = 'AutoSaving...';
         }
     }
+
+    runCode() {
+        const code = this.editor.value;
+        
+        try {
+            // Очищаем canvas
+            const canvas = document.getElementById('watchCanvas');
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            // Очищаем консоль
+            document.getElementById('consoleOutput').innerHTML = '';
+            
+            // Выполняем код
+            eval(code);
+            
+            logToConsole('success', 'Code executed successfully');
+        } catch (error) {
+            logToConsole('error', `Execution error: ${error.message}`);
+            console.error(error);
+        }
+    }
 }
