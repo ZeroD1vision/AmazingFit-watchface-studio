@@ -55,5 +55,52 @@ class CodeEditor {
         this.socket.on('disconnect', () => {
             logToConsole('warn', 'Disconnected from server');
         });
+
+        setupEvents() {
+            document.getElementById('saveBtn').addEventListener('click', () => {
+                this.saveWatchface();
+            });
+            document.getElementById('runBtn').addEventListener('click', () => {
+                this.runCode();
+            });
+            document.getElementById('formatBtn').addEventListener('click', () => {
+                this.saveWatchface();
+            });
+            document.getElementById('newBtn').addEventListener('click', () => {
+                this.currentWatchface();
+            });
+            document.getElementById('watchfaceSelect').addEventListener('click', (e) => {
+                this.loadWatchface(e.target.value);
+            });
+
+            setInterval(() => this.autoSave(), 30000);
+        }
+    }
+
+    updateLineCounter() {
+        const text = this.editor.value;
+        const lines = text.substr(0, this.editor.selectionStart).split('\n');
+        const line = lines.length;
+        const col = lines[lines.length - 1].length + 1;
+
+        document.getElementById('lineCounter').textContent = `Line: ${line}, Col; ${col}`;
+    }
+
+    async loadWatchface(name = this.currentWatchface) {
+        try {
+            const response = await fetch(`http/localhost:3000/${name}`);
+            if(!response.ok) throw new Error('Failed to load');
+            
+            const data = await response.json();
+
+            this.editor.value = data.code;
+            this.currentWatchface = name;
+
+            this.socket.emit('join-watchface', name);
+            logToConsole('success', `Loaded watchface: ${name}`);
+            this.updateLineCounter();
+        } catch (error) {
+            logToConsole('error', `Failed to load watchface: ${name}`);
+        }
     }
 }
