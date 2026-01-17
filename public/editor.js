@@ -126,4 +126,15 @@ class CodeEditor {
             logToConsole('error', `Failed to save: ${error.message}`);
         }
     }
+
+    autoSave() {
+        if (this.editor.value.trim()) {
+            this.socket.emit('code-change', {
+                watchfaceName: this.currentWatchface,
+                code: this.editor.value
+            });
+
+            document.getElementById('statusText').textContent = 'AutoSaving...';
+        }
+    }
 }
