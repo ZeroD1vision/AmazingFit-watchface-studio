@@ -77,7 +77,7 @@ class CodeEditor {
         setInterval(() => this.autoSave(), 30000);
     }
     
-    
+
     updateLineCounter() {
         const text = this.editor.value;
         const lines = text.substr(0, this.editor.selectionStart).split('\n');
@@ -89,7 +89,7 @@ class CodeEditor {
 
     async loadWatchface(name = this.currentWatchface) {
         try {
-            const response = await fetch(`http/localhost:3000/${name}`);
+            const response = await fetch(`/api/watchface/${name}`);
             if(!response.ok) throw new Error('Failed to load');
             
             const data = await response.json();
@@ -104,4 +104,6 @@ class CodeEditor {
             logToConsole('error', `Failed to load watchface: ${error.message}`);
         }
     }
+
+    async saveWatchface()
 }
