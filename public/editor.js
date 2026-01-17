@@ -55,28 +55,29 @@ class CodeEditor {
         this.socket.on('disconnect', () => {
             logToConsole('warn', 'Disconnected from server');
         });
-
-        setupEvents() {
-            document.getElementById('saveBtn').addEventListener('click', () => {
-                this.saveWatchface();
-            });
-            document.getElementById('runBtn').addEventListener('click', () => {
-                this.runCode();
-            });
-            document.getElementById('formatBtn').addEventListener('click', () => {
-                this.saveWatchface();
-            });
-            document.getElementById('newBtn').addEventListener('click', () => {
-                this.currentWatchface();
-            });
-            document.getElementById('watchfaceSelect').addEventListener('click', (e) => {
-                this.loadWatchface(e.target.value);
-            });
-
-            setInterval(() => this.autoSave(), 30000);
-        }
     }
 
+    setupEvents() {
+        document.getElementById('saveBtn').addEventListener('click', () => {
+            this.saveWatchface();
+        });
+        document.getElementById('runBtn').addEventListener('click', () => {
+            this.runCode();
+        });
+        document.getElementById('formatBtn').addEventListener('click', () => {
+            this.saveWatchface();
+        });
+        document.getElementById('newBtn').addEventListener('click', () => {
+            this.currentWatchface();
+        });
+        document.getElementById('watchfaceSelect').addEventListener('click', (e) => {
+            this.loadWatchface(e.target.value);
+        });
+
+        setInterval(() => this.autoSave(), 30000);
+    }
+    
+    
     updateLineCounter() {
         const text = this.editor.value;
         const lines = text.substr(0, this.editor.selectionStart).split('\n');
@@ -100,7 +101,7 @@ class CodeEditor {
             logToConsole('success', `Loaded watchface: ${name}`);
             this.updateLineCounter();
         } catch (error) {
-            logToConsole('error', `Failed to load watchface: ${name}`);
+            logToConsole('error', `Failed to load watchface: ${error.message}`);
         }
     }
 }
