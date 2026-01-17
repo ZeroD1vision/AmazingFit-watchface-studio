@@ -29,5 +29,31 @@ class CodeEditor {
                 this.updateLineCounter();
             }
         });
+
+        this.editor.addEventListener('input', () => {
+            this.updateLineCounter();
+            this.autoSave();
+        });
+
+        this.editor.addEventListener('keyup', this.updateLineCounter.bind(this));
+        this.editor.addEventListener('click', this.updateLineCounter.bind(this));
+    }
+
+    setupSocket() {
+        this.socket.on('connect', () => {
+            this.socket.emit('join-watchface', this.currentWatchface);
+        });
+
+        this.socket.on('code-updated', (code) => {
+            if (this.editor.value !== code) {
+                this.editor.value = code;
+                this.updateLineCounter();
+                logToConsole('info', 'Code updated from server');
+            }
+        });
+
+        this.socket.on('disconnect', () => {
+            logToConsole('warn', 'Disconnected from server');
+        });
     }
 }
