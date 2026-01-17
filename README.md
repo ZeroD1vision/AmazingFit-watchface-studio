@@ -25,3 +25,28 @@ npm install
 
 # Start development server
 npm run dev
+```
+
+```mermaid
+graph TB
+    Browser[Браузер] --> HTML[HTML файл]
+    HTML --> CSS[Стили]
+    HTML --> JS[JavaScript файлы]
+    
+    JS --> Editor[editor.js]
+    JS --> Simulator[simulator.js]
+    JS --> Emulator[zeppos-emulator.js]
+    
+    Editor -- HTTP/WebSocket --> Server[server.js]
+    Simulator --> Canvas[Canvas API]
+    Emulator --> Canvas
+    
+    Server --> FileSystem[Файловая система]
+    Server --> WebSocket[WebSocket соединения]
+    
+    Editor -- eval() --> UserCode[Код циферблата пользователя]
+    UserCode --> Emulator
+    Emulator --> Canvas
+    
+    Canvas --> VisualOutput[Визуальный вывод]
+```

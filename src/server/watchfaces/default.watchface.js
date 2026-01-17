@@ -1,27 +1,4 @@
-const express = require('express');
-const http = require('http');
-const socketIO = require('socket.io');
-const fs = require('fs');
-const path = require('path');
-const chokidar = require('chokidar');
-const { json } = require('stream/consumers');
-
-const app = express();
-const server = http.createServer(app);
-const io = socketIO(server);
-
-const PORT = process.env.PORT || 3000;
-
-app.use(express.static(path.join(__dirname, '../../public')));
-app.use(express.json());
-
-const WATCHFACES_DIR = path.join(__dirname, 'watchfaces');
-if (!fs.existsSync(WATCHFACES_DIR)) {
-  fs.mkdirSync(WATCHFACES_DIR, { recursive: true });
-}
-
-// Пример watchface по умолчанию
-const DEFAULT_WATCHFACE = `// AmazingFit Watchface Editor
+// AmazingFit Watchface Editor
 // Ваш код здесь обновляется в реальном времени
 
 // Функция инициализации
@@ -125,65 +102,4 @@ function clearHands() {
 }
 
 // Запускаем при загрузке
-onInit();`;
-
-const defaultWatchfacePath = path.join(WATCHFACES_DIR, 'default.watchface.js');
-if (!fs.existsSync(defaultWatchfacePath)) {
-  fs.writeFileSync(defaultWatchfacePath, DEFAULT_WATCHFACE);
-}
-
-app.get('/api/watchfaces', (req, res) => {
-  fs.readdir(WATCHFACES_DIR, (err, files) => {
-    if (err) {
-      return res.status(500).json({ error: 'Cannot read watchfaces' });
-    }
-    res.json(files);
-  });
-});
-
-app.get('/api/watchface/:name', (req, res) => {
-  fs.readFile(
-    path.join(WATCHFACES_DIR, req.params.name),
-    'utf8',
-    (err, data) => {
-      if (err) {
-        return res.status(404).json({ error: 'Watchface not found' });
-      }
-      res.json({ code: data });
-    },
-  );
-});
-
-app.post('/api/watchface/:name', (req, res) => {
-  fs.writeFile(path.join(WATCHFACES_DIR, req.params.name), 'utf8', (err) => {
-    if (err) {
-      return res.status(500).json({ error: 'Cannot save wachface' });
-    }
-    res.json({ success: true });
-  });
-});
-
-io.on('connection', (socket) => {
-  console.log('Client connected:', socket.id);
-
-  socket.on('join-watchface', (watchfaceName) => {
-    socket.join(watchfaceName);
-    console.log(`${socket.id} joined ${watchfaceName}`);
-  });
-
-  socket.on('code-change', ({ watchfaceName, code }) => {
-    fs.writeFile(path.join(WATCHFACES_DIR, watchfaceName), code, (err) => {
-      if (!err) {
-        io.to(watchfaceName).emit('code-updated', code);
-      }
-    });
-  });
-
-  socket.on('disconnect', () => {
-    console.log('Client disconnected ', socket.id);
-  });
-});
-
-server.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+onInit();

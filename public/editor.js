@@ -159,4 +159,89 @@ class CodeEditor {
             console.error(error);
         }
     }
+
+    formatCode() {
+        // Простое форматирование - добавляем отступы
+        let code = this.editor.value;
+        
+        // Удаляем лишние пробелы в конце строк
+        code = code.split('\n').map(line => line.trimEnd()).join('\n');
+        
+        // Добавляем отступы для блоков
+        let indent = 0;
+        const lines = code.split('\n');
+        const formatted = [];
+        
+        for (let line of lines) {
+            const trimmed = line.trim();
+            
+            // Уменьшаем отступ при закрывающих скобках
+            if (trimmed.endsWith('}') || trimmed.endsWith(']') || trimmed.endsWith(')')) {
+                indent = Math.max(0, indent - 2);
+            }
+            
+            // Добавляем текущий отступ
+            formatted.push(' '.repeat(indent) + trimmed);
+            
+            // Увеличиваем отступ при открывающих скобках
+            if (trimmed.endsWith('{') || trimmed.endsWith('[') || trimmed.endsWith('(')) {
+                indent += 2;
+            }
+        }
+
+        this.editor.value = formatted.join('\n');
+        this.updateLineCounter();
+        logToConsole('info', 'Code formatted');
+    }
+
+    createNewWatchface() {
+        const name = prompt('Enter watchface name:', `watchface_${Date.now()}.watchface.js`);
+        if (name && !name.endsWith('.js')) {
+            alert('File must have .js extension');
+            return;
+        }
+        
+        if (name) {
+            this.currentWatchface = name;
+            this.editor.value = `// New AmazingFit Watchface
+// Created: ${new Date().toLocaleString()}
+
+function onInit() {
+    console.log('Hello AmazingFit!');
+    
+    // Draw background
+    hmUI.createWidget(hmUI.widget.FILL_RECT, {
+        x: 0,
+        y: 0,
+        w: 454,
+        h: 454,
+        color: 0x000000
+    });
+    
+    // Add your code here
+}
+
+// Start the watchface
+onInit();`;
+            
+            this.saveWatchface();
+            this.updateLineCounter();
+        }
+    }
+}
+
+// Инициализация при загрузке страницы
+document.addEventListener('DOMContentLoaded', () => {
+    window.editor = new CodeEditor();
+});
+
+// Вспомогательная функция для логирования в консоль
+function logToConsole(type, message) {
+    const consoleOutput = document.getElementById('consoleOutput');
+    const line = document.createElement('div');
+    line.className = `console-line ${type}`;
+    line.textContent = `[${new Date().toLocaleTimeString()}] ${type.toUpperCase()}: ${message}`;
+    
+    consoleOutput.appendChild(line);
+    consoleOutput.scrollTop = consoleOutput.scrollHeight;
 }
