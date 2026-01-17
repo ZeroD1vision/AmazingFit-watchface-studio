@@ -105,5 +105,25 @@ class CodeEditor {
         }
     }
 
-    async saveWatchface()
+    async saveWatchface() {
+        try {
+            const code = this.editor.value;
+            const response = await fetch(`/api/watchface/${this.currentWatchface}`, {
+                method: 'POST',
+                headers: { 'Content-type': 'application/json' },
+                body: JSON.stringify({ code })
+            });
+
+            if (!response.ok) throw new Error('Failed to save');
+
+            logToConsole('success', 'Watchface saved successfully');
+            document.getElementById('statusText').textContent = 'Saved';
+
+            setTimeout(() => {
+                document.getElementById('statusText').textContent = 'Ready';
+            });
+        } catch (error) {
+            logToConsole('error', `Failed to save: ${error.message}`);
+        }
+    }
 }
